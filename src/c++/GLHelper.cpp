@@ -2,9 +2,30 @@
  * GLHelper -- utilities for creating OpenGL programs.
  *
  * author: Anthony Castiglia
+ *
+ * References:
+ *   * http://www.nexcius.net/2012/11/20/how-to-load-a-glsl-shader-in-opengl-using-c/
+ *   * http://solarianprogrammer.com/2013/05/10/opengl-101-windows-osx-linux-getting-started/
  */
 
 #include "GLHelper.h"
+
+void log(log_type t, const char* message) {
+	switch (t) {
+		case ERROR:
+			std::cerr << "[Error] " << message << std::endl;
+			break;
+		case WARNING:
+			std::cerr << "[Warning] " << message << std::endl;
+			break;
+		case DEBUG:
+			std::cout << "[Debug] " << message << std::endl;
+			break;
+		default:
+			log(ERROR, "Invalid log type");
+			break;
+	}
+}
 
 const char* load_shader_source(const char* shaderpath) {
 	std::string shaderStr;
@@ -19,7 +40,7 @@ const char* load_shader_source(const char* shaderpath) {
 		shaderSrc = shaderStr.c_str();    // Convert to C-style string
 		shaderfile.close();
 	} else {
-		std::cerr << "Error: could not open vertex shader '" << shaderpath << "'" 
+		std::cerr << "Error: could not open shader '" << shaderpath << "'" 
 			<< std::endl;
 		exit(1);
 	}
@@ -27,28 +48,21 @@ const char* load_shader_source(const char* shaderpath) {
 	return shaderSrc;
 }
 
-GLuint shader_program(const char* vshaderSrc, const char* fshaderSrc) {
-	// Create shader objects
-	GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
-	GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
-	// Compile shaders
-	glShaderSource(vshader, 1, &vshaderSrc, NULL);
-	glCompileShader(vshader);
+void compile_shader(GLuint shader) {
+	GLint compile_success;
+	int logLen;
 
-	glShaderSource(fshader, 1, &fshaderSrc, NULL);
-	glCompileShader(fshader);
+	glCompileShader(shader);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_success);
 
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vshader);
-	glAttachShader(shaderProgram, fshader);
+	if (!compile_success) {
+		log(ERROR, "Failed to compile shader");
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLen);
+		
+		std::vector<char> compileLog(logLen);
+		glGetShaderInfoLog(shader, logLen, NULL, &compileLog[0]);
+		log(ERROR, &compileLog[0]);
 
-	return shaderProgram;	
+		exit(-1);
+	}
 }
-
-GLuint shader_program_from_files(const char* vshaderpath, const char*
-		fshaderpath) {
-	const char* vshaderSrc = load_shader_source(vshaderpath);
-	const char* fshaderSrc = load_shader_source(fshaderpath);
-	return shader_program(vshaderSrc, fshaderSrc);
-}
-
