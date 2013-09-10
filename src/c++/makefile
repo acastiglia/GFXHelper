@@ -1,6 +1,6 @@
 # author: Anthony Castiglia
 
-LDLIBS = -lGLEW -lGL
+LDLIBS = -lglfw -lGLEW -lGL
 
 CC = g++
 CFLAGS = -c -Wall $(DEBUG) 
@@ -12,23 +12,33 @@ LFLAGS = $(LIBFLAGS) -Wall $(DEBUG)
 CLIBFLAGS = $(LIBFLAGS)
 CCLIBFLAGS = $(LIBFLAGS)
 
-OBJS = GLHelper.o
+BUILDDIR = ../../
+OBJS = GraphicsWindow.o util.o 
+# LIBS = libGLHelper.a libGLHelper.so
 
-# all: $(MAIN)
-all: GLHelper.o
+all: main
 
-# _.o: _.h _.cpp
-# 	$(CC) $(CFLAGS) _.cpp
+util.o: util.h util.cpp
+	$(CC) $(CFLAGS) util.cpp
 
-GLHelper.o: GLHelper.h GLHelper.cpp
-	$(CC) $(CFLAGS) GLHelper.cpp
+GraphicsWindow.o: GraphicsWindow.h util.h GraphicsWindow.cpp
+	$(CC) $(CFLAGS) GraphicsWindow.cpp
 
+main: $(OBJS)
+	$(CC) -o main $(OBJS) $(LFLAGS) 
 
-$(MAIN): $(OBJS)
-	$(CC) $(OBJS) $(LFLAGS) -o $(MAIN)
+# libGLHelper.a: $(OBJS)
+# 	ar rcs libGLHelper.a $(OBJS)
+# 
+# libGLHelper.so: $(OBJS)
+# 	g++ -shared -Wl -o libGLHelper.so $(OBJS)
 
 debug:
 	$(MAKE) $(MAKEFILE) DEBUG="-g"
 
+# deploy: $(LIBS)
+# 	mv -t ../../lib/ $(LIBS)
+# 	cp -t ../../include GLHelper.h
+
 clean:
-	rm -rf *.o $(MAIN) $(SUBMISSION) 
+	rm -f *.o
