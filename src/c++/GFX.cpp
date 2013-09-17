@@ -108,11 +108,14 @@ void GFXWindow::init() {
 
 void GFXWindow::render() {
 	glClearColor(r, g, b, a);
+	int size;
 
 	do {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, objects[0].first.size() / VERTEX_SIZE);
+		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+		glDrawElements(GL_LINE_LOOP, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);	
+		
 		glfwSwapBuffers();
 	} while (glfwGetWindowParam(GLFW_OPENED));
 }
