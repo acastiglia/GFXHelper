@@ -4,7 +4,7 @@
  * author: Anthony Castiglia
  */
 
-#include "util.h"
+#include "GFXUtil.h"
 #include "GFX.h"
 
 GFXWindow::GFXWindow(int h, int w) : height(h), width(w), vshaderPath(0),
