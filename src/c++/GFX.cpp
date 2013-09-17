@@ -27,11 +27,11 @@ void GFXWindow::setFragmentShader(const char* path) {
 	fshaderPath = path;
 }
 
-void GFXWindow::addObject(std::vector<GLfloat> vertices) {
-	objects.push_back(vertices);
+void GFXWindow::addObject(GFXObject obj) {
+	objects.push_back(obj);
 }
 
-std::vector<GLfloat> GFXWindow::getObject(int ind) {
+GFXObject GFXWindow::getObject(int ind) {
 	return objects[ind];
 }
 
@@ -65,13 +65,30 @@ void GFXWindow::init() {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	std::vector<GLfloat> vertex_data = getObject(0);
+	// std::vector<GLfloat> vertex_data = getObject(0);
+	GFXObject obj = getObject(0);
+	std::vector<GLfloat> vertex_data = obj.first;
+	std::vector<GLushort> faces_data= obj.second;
 
+	// Create and bind the vertex buffer
 	GLuint vbo;
 	glGenBuffers(1, &vbo);
-
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(GLfloat), &vertex_data[0], GL_STATIC_DRAW);	
+	glBufferData(
+			GL_ARRAY_BUFFER, 
+			vertex_data.size() * sizeof(GLfloat), 
+			&vertex_data[0], 
+			GL_STATIC_DRAW);	
+
+	// Create and bind the element (index) buffer
+	GLuint ibo;
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(
+			GL_ELEMENT_ARRAY_BUFFER, 
+			faces_data.size() * sizeof(GLushort),
+			&faces_data[0],
+			GL_STATIC_DRAW);
 
 	GLuint shaderProgram;
 
@@ -93,10 +110,9 @@ void GFXWindow::render() {
 	glClearColor(r, g, b, a);
 
 	do {
-		log(DEBUG, "render loop");
 		glClear(GL_COLOR_BUFFER_BIT);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, objects[0].size() / VERTEX_SIZE);
+		glDrawArrays(GL_TRIANGLES, 0, objects[0].first.size() / VERTEX_SIZE);
 		glfwSwapBuffers();
 	} while (glfwGetWindowParam(GLFW_OPENED));
 }

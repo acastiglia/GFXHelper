@@ -11,12 +11,15 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 #include <vector>
+#include <utility>
 
-class GFXWindow{
+typedef std::pair<std::vector<GLfloat>, std::vector<GLushort> > GFXObject;
+
+class GFXWindow {
 private:
 	int height, width;
 	float r, g, b, a;
-	std::vector<std::vector<GLfloat> > objects;
+	std::vector<GFXObject> objects;
 	const char* vshaderPath;
 	const char* fshaderPath;
 	GLuint vao;
@@ -32,10 +35,12 @@ public:
 	void setBG(float r, float g, float b, float a);
 	void setVertexShader(const char* path);
 	void setFragmentShader(const char* path);
-	void addObject(std::vector<GLfloat> vertices);
-	std::vector<GLfloat> getObject(int ind);
+	// void addObject(std::vector<GLfloat> vertices);
+	void addObject(GFXObject obj);
+	GFXObject getObject(int ind);
 	void init();
 	void render();
 	void createWindow();
 	void quit(int exit_status);
 };
+

@@ -2,7 +2,7 @@
 
 LDLIBS = -lglfw -lGLEW -lGL
 
-CC = g++ -std=c++0x
+CC = clang++ -std=c++0x
 CFLAGS = -c -Wall $(DEBUG) 
 CCFLAGS =  $(CFLAGS)
 CXXFLAGS = $(CFLAGS)
