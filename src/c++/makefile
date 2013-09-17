@@ -1,8 +1,8 @@
 # author: Anthony Castiglia
 
-LDLIBS = -lGLEW -lGL
+LDLIBS = -lglfw -lGLEW -lGL
 
-CC = g++
+CC = g++ -std=c++0x
 CFLAGS = -c -Wall $(DEBUG) 
 CCFLAGS =  $(CFLAGS)
 CXXFLAGS = $(CFLAGS)
@@ -12,23 +12,19 @@ LFLAGS = $(LIBFLAGS) -Wall $(DEBUG)
 CLIBFLAGS = $(LIBFLAGS)
 CCLIBFLAGS = $(LIBFLAGS)
 
-OBJS = GLHelper.o
+BUILDDIR = ../../
+OBJS = util.o 
 
-# all: $(MAIN)
-all: GLHelper.o
+all: util.o GFX.o
 
-# _.o: _.h _.cpp
-# 	$(CC) $(CFLAGS) _.cpp
+util.o: util.h util.cpp
+	$(CC) $(CFLAGS) util.cpp
 
-GLHelper.o: GLHelper.h GLHelper.cpp
-	$(CC) $(CFLAGS) GLHelper.cpp
-
-
-$(MAIN): $(OBJS)
-	$(CC) $(OBJS) $(LFLAGS) -o $(MAIN)
+GFX.o: GFX.h util.h GFX.cpp
+	$(CC) $(CFLAGS) GFX.cpp
 
 debug:
 	$(MAKE) $(MAKEFILE) DEBUG="-g"
 
 clean:
-	rm -rf *.o $(MAIN) $(SUBMISSION) 
+	rm -f *.o 
