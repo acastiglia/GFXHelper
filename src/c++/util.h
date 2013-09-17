@@ -16,7 +16,8 @@ enum log_type {ERROR, WARNING, DEBUG};
 
 void compile_shader(GLuint shader);
 GLuint shader_program(const char* vshaderSrc, const char* fshaderSrc);
-
+GLuint shader_program_from_files(const char* vshaderPath, const char*
+		fshaderPath);
 std::string read_file(const char* path);
 void log(log_type t, const char* message);
 
