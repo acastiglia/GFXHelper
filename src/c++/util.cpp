@@ -85,25 +85,3 @@ GLuint shader_program(const char* vshaderSrc, const char* fshaderSrc) {
 	return shaderProgram;
 }
 
-GLuint shader_program_from_files(const char* vshaderPath, const char*
-		fshaderPath) {
-	if (vshaderPath == NULL) {
-		throw "No vertex shader specified";
-	}
-
-	if (vshaderPath == NULL) {
-		throw "No fragment shader specified";
-	}
-
-	std::string vshaderStr;
-	std::string fshaderStr;
-
-	vshaderStr = read_file(vshaderPath);
-	fshaderStr = read_file(fshaderPath);
-
-	const char* vshaderSrc = vshaderStr.c_str();
-	const char* fshaderSrc = fshaderStr.c_str();
-
-	return shader_program(vshaderSrc, fshaderSrc);
-}
-
