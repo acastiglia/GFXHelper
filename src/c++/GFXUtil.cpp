@@ -8,7 +8,7 @@
  *   * http://solarianprogrammer.com/2013/05/10/opengl-101-windows-osx-linux-getting-started/
  */
 
-#include "util.h"
+#include "GFXUtil.h"
 
 void log(log_type t, const char* message) {
 	switch (t) {
