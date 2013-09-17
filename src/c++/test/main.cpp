@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 #include "GFX.h"
-#include "util.h"
+#include "GFXUtil.h"
 
 
 GLfloat verts[] = {

@@ -13,14 +13,14 @@ CLIBFLAGS = $(LIBFLAGS)
 CCLIBFLAGS = $(LIBFLAGS)
 
 BUILDDIR = ../../
-OBJS = util.o 
+OBJS = GFXUtil.o 
 
-all: util.o GFX.o
+all: GFXUtil.o GFX.o
 
-util.o: util.h util.cpp
-	$(CC) $(CFLAGS) util.cpp
+GFXUtil.o: GFXUtil.h GFXUtil.cpp
+	$(CC) $(CFLAGS) GFXUtil.cpp
 
-GFX.o: GFX.h util.h GFX.cpp
+GFX.o: GFX.h GFXUtil.h GFX.cpp
 	$(CC) $(CFLAGS) GFX.cpp
 
 debug:

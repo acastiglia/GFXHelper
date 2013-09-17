@@ -13,7 +13,7 @@ CLIBFLAGS = $(LIBFLAGS)
 CCLIBFLAGS = $(LIBFLAGS)
 
 BUILDDIR = ../../
-OBJS = ../util.o ../GFX.o main.o
+OBJS = ../GFXUtil.o ../GFX.o main.o
 # LIBS = libGLHelper.a libGLHelper.so
 
 all: main
