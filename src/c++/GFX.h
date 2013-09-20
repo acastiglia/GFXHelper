@@ -8,8 +8,13 @@
  *   http://en.wikibooks.org/wiki/OpenGL_Programming
  */
 
+#ifndef __GFX_H__
+#define __GFX_H__
 #include <GL/glew.h>
 #include <GL/glfw.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <utility>
 
@@ -30,17 +35,27 @@ private:
 	static const int STENCIL_BUFFER_BITS = 0;
 	static const int VERTEX_SIZE = 3;
 
+	// Camera coordinates
+	glm::vec3 eyepoint;
+	glm::vec3 lookat;
+	glm::vec3 up;
+
+	glm::mat4 mvp;
+	GLint uniform_mvp;
+
 public:
 	GFXWindow(int h, int w);
 	void setBG(float r, float g, float b, float a);
 	void setVertexShader(const char* path);
 	void setFragmentShader(const char* path);
-	// void addObject(std::vector<GLfloat> vertices);
+	void setCamera(glm::vec3 eyepoint, glm::vec3 lookat, glm::vec3 up);
 	void addObject(GFXObject obj);
 	GFXObject getObject(int ind);
 	void init();
+	void idle(glm::mat4 model_transform);
 	void render();
 	void createWindow();
 	void quit(int exit_status);
 };
 
+#endif

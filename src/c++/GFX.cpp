@@ -9,7 +9,7 @@
 
 GFXWindow::GFXWindow(int h, int w) : height(h), width(w), vshaderPath(0),
 	fshaderPath(0) {
-	std::vector<std::vector<GLfloat> > objects();
+	std::vector<std::vector<GLfloat> > objects;
 }
 
 void GFXWindow::setBG(float r, float g, float b, float a) {
@@ -17,6 +17,13 @@ void GFXWindow::setBG(float r, float g, float b, float a) {
 	this->g = g;
 	this->b = b;
 	this->a = a;
+	glClearColor(r, g, b, a);
+}
+
+void GFXWindow::setCamera(glm::vec3 eyepoint, glm::vec3 lookat, glm::vec3 up) {
+	this->eyepoint = eyepoint;
+	this->lookat = lookat;
+	this->up = up;
 }
 
 void GFXWindow::setVertexShader(const char* path) {
@@ -99,6 +106,13 @@ void GFXWindow::init() {
 		quit(-1);
 	}
 
+	uniform_mvp = glGetUniformLocation(shaderProgram, "mvp");
+
+	if (uniform_mvp == -1) {
+		log(ERROR, "Could not bind uniform variable 'mvp' in vertex shader");
+		quit(-1);
+	}
+
 	GLint position_attribute = glGetAttribLocation(shaderProgram, "position");
 	glVertexAttribPointer(position_attribute, VERTEX_SIZE, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -106,18 +120,25 @@ void GFXWindow::init() {
 	glEnableVertexAttribArray(position_attribute);
 }
 
+void GFXWindow::idle(glm::mat4 model_transform) {
+	glm::mat4 view = glm::lookAt(eyepoint, lookat, up);
+	glm::mat4 projection = glm::perspective(45.0f, 1.0f * width / height, 0.1f,
+			10.0f);
+	mvp = projection * view * model_transform;
+	glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+}
+
 void GFXWindow::render() {
-	glClearColor(r, g, b, a);
 	int size;
 
-	do {
-		glClear(GL_COLOR_BUFFER_BIT);
-		glBindVertexArray(vao);
-		glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-		glDrawElements(GL_LINE_LOOP, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);	
-		
-		glfwSwapBuffers();
-	} while (glfwGetWindowParam(GLFW_OPENED));
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindVertexArray(vao);
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+	glDrawElements(GL_TRIANGLES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);	
+	glFlush();
+	
+	glfwSwapBuffers();
 }
 
 void GFXWindow::quit(int exit_status) {

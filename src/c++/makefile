@@ -26,9 +26,5 @@ GFX.o: GFX.h GFXUtil.h GFX.cpp
 debug:
 	$(MAKE) $(MAKEFILE) DEBUG="-g"
 
-# deploy: $(LIBS)
-# 	mv -t ../../lib/ $(LIBS)
-# 	cp -t ../../include GLHelper.h
-
 clean:
 	rm -f *.o 

@@ -13,16 +13,21 @@ CLIBFLAGS = $(LIBFLAGS)
 CCLIBFLAGS = $(LIBFLAGS)
 
 BUILDDIR = ../../
-OBJS = ../GFXUtil.o ../GFX.o main.o
-# LIBS = libGLHelper.a libGLHelper.so
+OBJS = ../GFXUtil.o ../GFX.o
 
 all: main
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
 
-main: $(OBJS)
-	$(CC) -o main $(OBJS) $(LFLAGS) 
+main: $(OBJS) main.o
+	$(CC) -o main $(OBJS) main.o $(LFLAGS) 
+
+test.o: test.cpp
+	$(CC) $(CFLAGS) test.cpp
+
+test: test.o
+	$(CC) $(CFLAGS) $(OBJS) test.o 
 
 debug:
 	$(MAKE) $(MAKEFILE) DEBUG="-g"
