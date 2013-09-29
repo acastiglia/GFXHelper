@@ -19,22 +19,22 @@ const glm::vec3 e3(0.0, 0.0, 1.0);
 
 
 GLfloat verts[] = {
-	0.5, -0.5, 0.0,
-	0.5,  0.5, 0.0,
- -0.5, -0.5, 0.0,
- -0.5,  0.5, 0.0,
+  0.5, -0.5, 0.0,
+  0.5,  0.5, 0.0,
+  -0.5, -0.5, 0.0,
+  -0.5,  0.5, 0.0,
 };
 
 std::vector<GLfloat> vertex_data
-  (verts, verts + sizeof(verts) / sizeof(GLfloat));
+(verts, verts + sizeof(verts) / sizeof(GLfloat));
 
 GLushort faces[] = {
-	0, 1, 2,
-	1, 3, 2
+  0, 1, 2,
+  1, 3, 2
 };
 
 std::vector<GLushort> faces_data
-	(faces, faces + sizeof(faces) / sizeof(GLushort));
+(faces, faces + sizeof(faces) / sizeof(GLushort));
 
 GFXObject square(vertex_data, faces_data);
 
@@ -63,64 +63,64 @@ GFXWindow gw(800, 800);
 // }
 
 int main() {
-	gw.setBG(0, 0, 0, 0);
-	gw.setCamera(eyepoint, lookat, up);
-	gw.addObject(square);
+  gw.setBG(0, 0, 0, 0);
+  gw.setCamera(eyepoint, lookat, up);
+  gw.addObject(square);
 
-	gw.setVertexShader("shaders/vert.shader");
-	gw.setFragmentShader("shaders/frag.shader");
-	gw.createWindow();
-	gw.init();
+  gw.setVertexShader("shaders/vert.shader");
+  gw.setFragmentShader("shaders/frag.shader");
+  gw.createWindow();
+  gw.init();
 
-	int frames = 0;
+  int frames = 0;
 
-	double x = x_min;
-	double y = y_min;
-	double theta = 0.0;
-	double dx = 0.0;
-	double dy = 0.0;
-	double d_theta;
-	double dt;
-	double tt;
+  double x = x_min;
+  double y = y_min;
+  double theta = 0.0;
+  double dx = 0.0;
+  double dy = 0.0;
+  double d_theta;
+  double dt;
+  double tt;
 
-	struct timespec t0;
-	struct timespec t1;
-	struct timespec t2;
-	struct timespec tf;
-	clock_gettime(CLOCK_MONOTONIC, &t0);
-	clock_gettime(CLOCK_MONOTONIC, &t1);
+  struct timespec t0;
+  struct timespec t1;
+  struct timespec t2;
+  struct timespec tf;
+  clock_gettime(CLOCK_MONOTONIC, &t0);
+  clock_gettime(CLOCK_MONOTONIC, &t1);
 
-	do {
+  do {
 
-		clock_gettime(CLOCK_MONOTONIC, &t2);
+    clock_gettime(CLOCK_MONOTONIC, &t2);
 
-		dt = (t2.tv_sec - t1.tv_sec) * BILLION + (t2.tv_nsec - t1.tv_nsec);
-		dx = dt * v_x;
-		dy = dt * v_y;
-		x = x + dx;
-		y = y + dy;
-		d_theta = rotational_velocity * dt;
-		theta = theta + d_theta;
+    dt = (t2.tv_sec - t1.tv_sec) * BILLION + (t2.tv_nsec - t1.tv_nsec);
+    dx = dt * v_x;
+    dy = dt * v_y;
+    x = x + dx;
+    y = y + dy;
+    d_theta = rotational_velocity * dt;
+    theta = theta + d_theta;
 
-		clock_gettime(CLOCK_MONOTONIC, &t1);
+    clock_gettime(CLOCK_MONOTONIC, &t1);
 
-		glm::mat4 M_r = glm::rotate(glm::mat4(1.0f), (float) theta, e2);
-		glm::mat4 M_t = glm::translate(glm::mat4(1.0f), (float) x * e1 + (float) y * e2);
+    glm::mat4 M_r = glm::rotate(glm::mat4(1.0f), (float) theta, e2);
+    glm::mat4 M_t = glm::translate(glm::mat4(1.0f), (float) x * e1 + (float) y * e2);
 
-		gw.idle(M_t * M_r);
-		gw.render();
-		frames++;
+    gw.idle(M_t * M_r);
+    gw.render();
+    frames++;
 
-		clock_gettime(CLOCK_MONOTONIC, &tf);
-		tt = (tf.tv_sec - t0.tv_sec) + (tf.tv_nsec - t0.tv_nsec) / BILLION;
+    clock_gettime(CLOCK_MONOTONIC, &tf);
+    tt = (tf.tv_sec - t0.tv_sec) + (tf.tv_nsec - t0.tv_nsec) / BILLION;
 
-		glfwPollEvents();
-	} while (tt < 20.0 && glfwGetWindowParam(GLFW_OPENED));
+    glfwPollEvents();
+  } while (tt < 20.0 && glfwGetWindowParam(GLFW_OPENED));
 
   int total_time = tf.tv_sec - t0.tv_sec;
-	double fps = (double) frames / (double) total_time;
-	std::cout << "Summary: " << frames << " frames rendered in "
-		<< total_time << "s" << " (" << fps << "fps)" << std::endl;
+  double fps = (double) frames / (double) total_time;
+  std::cout << "Summary: " << frames << " frames rendered in "
+    << total_time << "s" << " (" << fps << "fps)" << std::endl;
 
-	glfwTerminate();
+  glfwTerminate();
 }
