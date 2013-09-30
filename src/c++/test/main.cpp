@@ -11,6 +11,9 @@
 #include "GFXUtil.h"
 
 #define BILLION 1000000000L
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 600
+
 
 // Cartesian basis vectors
 const glm::vec3 e1(1.0, 0.0, 0.0);
@@ -54,23 +57,19 @@ float v_x = (x_max - x_min) / T_nsec;
 float v_y = (y_max - y_min) / T_nsec;
 float rotational_velocity = total_rotation / T_nsec; // in deg/ns
 
-GFXWindow gw(800, 800);
-
-// void idle() {
-// 	M = glm::translate(M, v_x * dt * e1 + v_y * dt * e2);
-// 	gw.idle(M);
-// 	gw.render();
-// }
+GFXWindow gw(WINDOW_WIDTH, WINDOW_HEIGHT);
+GFXRenderer gr;
 
 int main() {
-  gw.setBG(0, 0, 0, 0);
-  gw.setCamera(eyepoint, lookat, up);
-  gw.addObject(square);
-
-  gw.setVertexShader("shaders/vert.shader");
-  gw.setFragmentShader("shaders/frag.shader");
   gw.createWindow();
-  gw.init();
+
+  gr.setBG(0, 0, 0, 0);
+  gr.setCamera(eyepoint, lookat, up);
+  gr.addObject(square);
+
+  gr.setVertexShader("shaders/vert.shader");
+  gr.setFragmentShader("shaders/frag.shader");
+  gr.init();
 
   int frames = 0;
 
@@ -91,7 +90,6 @@ int main() {
   clock_gettime(CLOCK_MONOTONIC, &t1);
 
   do {
-
     clock_gettime(CLOCK_MONOTONIC, &t2);
 
     dt = (t2.tv_sec - t1.tv_sec) * BILLION + (t2.tv_nsec - t1.tv_nsec);
@@ -107,8 +105,8 @@ int main() {
     glm::mat4 M_r = glm::rotate(glm::mat4(1.0f), (float) theta, e2);
     glm::mat4 M_t = glm::translate(glm::mat4(1.0f), (float) x * e1 + (float) y * e2);
 
-    gw.idle(M_t * M_r);
-    gw.render();
+    gr.idle(M_t * M_r, WINDOW_WIDTH, WINDOW_HEIGHT);
+    gr.render();
     frames++;
 
     clock_gettime(CLOCK_MONOTONIC, &tf);
@@ -119,7 +117,9 @@ int main() {
 
   int total_time = tf.tv_sec - t0.tv_sec;
   double fps = (double) frames / (double) total_time;
-  std::cout << "Summary: " << frames << " frames rendered in "
+  std::cout << "Summary: " << std::endl;
+	
+	std::cout << "\t" << frames << " frames rendered in "
     << total_time << "s" << " (" << fps << "fps)" << std::endl;
 
   glfwTerminate();
