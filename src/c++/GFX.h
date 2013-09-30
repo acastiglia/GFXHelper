@@ -20,20 +20,22 @@
 
 typedef std::pair<std::vector<GLfloat>, std::vector<GLushort> > GFXObject;
 
-class GFXWindow {
+class GFXRenderer {
   private:
-    int height, width;
-    float r, g, b, a;
-    std::vector<GFXObject> objects;
-    const char* vshaderPath;
-    const char* fshaderPath;
-    GLuint vao;
-
     static const int COLOR_DEPTH = 8;
     static const int ALPHA_DEPTH = 8;
     static const int DEPTH_BUFFER_BITS = 0;
     static const int STENCIL_BUFFER_BITS = 0;
     static const int VERTEX_SIZE = 3;
+
+    GLfloat r, g, b, a;
+		GLuint vao;
+		GLuint vbo;
+		GLuint ibo;
+		bool render_context_available;
+    const char* vshaderPath;
+    const char* fshaderPath;
+    std::vector<GFXObject> objects;
 
     // Camera coordinates
     glm::vec3 eyepoint;
@@ -44,18 +46,40 @@ class GFXWindow {
     GLint uniform_mvp;
 
   public:
-    GFXWindow(int h, int w);
+		GFXRenderer();
+    void setCamera(glm::vec3 eyepoint, glm::vec3 lookat, glm::vec3 up);
     void setBG(float r, float g, float b, float a);
     void setVertexShader(const char* path);
     void setFragmentShader(const char* path);
-    void setCamera(glm::vec3 eyepoint, glm::vec3 lookat, glm::vec3 up);
     void addObject(GFXObject obj);
     GFXObject getObject(int ind);
     void init();
-    void idle(glm::mat4 model_transform);
+		void idle(glm::mat4 model_transform, int width, int height);
     void render();
-    void createWindow();
-    void quit(int exit_status);
+		friend void quit(int exit_status);
 };
 
+class GFXWindow {
+  private:
+    int height, width;
+    // float r, g, b, a;
+    // std::vector<GFXObject> objects;
+    // const char* vshaderPath;
+    // const char* fshaderPath;
+    // GLuint vao;
+
+    static const int COLOR_DEPTH = 8;
+    static const int ALPHA_DEPTH = 8;
+    static const int DEPTH_BUFFER_BITS = 0;
+    static const int STENCIL_BUFFER_BITS = 0;
+    static const int VERTEX_SIZE = 3;
+
+  public:
+    GFXWindow(int h, int w);
+		std::pair<int, int> getWindowDimensions();
+    void createWindow();
+		friend void quit(int exit_status);
+};
+
+void quit(int exit_status);
 #endif
