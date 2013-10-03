@@ -58,18 +58,18 @@ float v_y = (y_max - y_min) / T_nsec;
 float rotational_velocity = total_rotation / T_nsec; // in deg/ns
 
 GFXWindow gw(WINDOW_WIDTH, WINDOW_HEIGHT);
-GFXRenderer gr;
+GFXScene scene;
 
 int main() {
   gw.createWindow();
 
-  gr.setBG(0, 0, 0, 0);
-  gr.setCamera(eyepoint, lookat, up);
-  gr.addObject(square);
+  scene.setBG(0, 0, 0, 0);
+  scene.setCamera(eyepoint, lookat, up);
+  scene.addObject(square);
 
-  gr.setVertexShader("shaders/vert.shader");
-  gr.setFragmentShader("shaders/frag.shader");
-  gr.init();
+  scene.setVertexShader("shaders/vert.shader");
+  scene.setFragmentShader("shaders/frag.shader");
+  scene.init();
 
   int frames = 0;
 
@@ -105,8 +105,8 @@ int main() {
     glm::mat4 M_r = glm::rotate(glm::mat4(1.0f), (float) theta, e2);
     glm::mat4 M_t = glm::translate(glm::mat4(1.0f), (float) x * e1 + (float) y * e2);
 
-    gr.idle(M_t * M_r, WINDOW_WIDTH, WINDOW_HEIGHT);
-    gr.render();
+    scene.idle(M_t * M_r, WINDOW_WIDTH, WINDOW_HEIGHT);
+    scene.render();
     frames++;
 
     clock_gettime(CLOCK_MONOTONIC, &tf);

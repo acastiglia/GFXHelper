@@ -20,7 +20,7 @@
 
 typedef std::pair<std::vector<GLfloat>, std::vector<GLushort> > GFXObject;
 
-class GFXRenderer {
+class GFXScene {
   private:
     static const int COLOR_DEPTH = 8;
     static const int ALPHA_DEPTH = 8;
@@ -46,7 +46,7 @@ class GFXRenderer {
     GLint uniform_mvp;
 
   public:
-		GFXRenderer();
+		GFXScene();
     void setCamera(glm::vec3 eyepoint, glm::vec3 lookat, glm::vec3 up);
     void setBG(float r, float g, float b, float a);
     void setVertexShader(const char* path);
@@ -62,12 +62,6 @@ class GFXRenderer {
 class GFXWindow {
   private:
     int height, width;
-    // float r, g, b, a;
-    // std::vector<GFXObject> objects;
-    // const char* vshaderPath;
-    // const char* fshaderPath;
-    // GLuint vao;
-
     static const int COLOR_DEPTH = 8;
     static const int ALPHA_DEPTH = 8;
     static const int DEPTH_BUFFER_BITS = 0;

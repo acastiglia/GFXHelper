@@ -7,9 +7,9 @@
 #include "GFXUtil.h"
 #include "GFX.h"
 
-/* ---------------- GFXRenderer implementation ------------------------------ */
+/* ---------------- GFXScene implementation ------------------------------ */
 
-GFXRenderer::GFXRenderer() {
+GFXScene::GFXScene() {
 	if (!glfwGetWindowParam(GLFW_OPENED)) {
 		log(WARNING, "Render context not detected");
 		// quit(-1);
@@ -18,13 +18,13 @@ GFXRenderer::GFXRenderer() {
 	}
 }
 
-void GFXRenderer::setCamera(glm::vec3 eyepoint, glm::vec3 lookat, glm::vec3 up) {
+void GFXScene::setCamera(glm::vec3 eyepoint, glm::vec3 lookat, glm::vec3 up) {
   this->eyepoint = eyepoint;
   this->lookat = lookat;
   this->up = up;
 }
 
-void GFXRenderer::setBG(float r, float g, float b, float a) {
+void GFXScene::setBG(float r, float g, float b, float a) {
   this->r = r;
   this->g = g;
   this->b = b;
@@ -32,23 +32,23 @@ void GFXRenderer::setBG(float r, float g, float b, float a) {
   glClearColor(r, g, b, a);
 }
 
-void GFXRenderer::setVertexShader(const char* path) {
+void GFXScene::setVertexShader(const char* path) {
   vshaderPath = path;
 }
 
-void GFXRenderer::setFragmentShader(const char* path) {
+void GFXScene::setFragmentShader(const char* path) {
   fshaderPath = path;
 }
 
-void GFXRenderer::addObject(GFXObject obj) {
+void GFXScene::addObject(GFXObject obj) {
   objects.push_back(obj);
 }
 
-GFXObject GFXRenderer::getObject(int ind) {
+GFXObject GFXScene::getObject(int ind) {
   return objects[ind];
 }
 
-void GFXRenderer::init() {
+void GFXScene::init() {
   if (!render_context_available) {
 		log(WARNING, "Render context not detected");
   }
@@ -108,7 +108,7 @@ void GFXRenderer::init() {
   glEnableVertexAttribArray(position_attribute);
 }
 
-void GFXRenderer::render() {
+void GFXScene::render() {
   int size;
 
   glEnable(GL_DEPTH_TEST);
@@ -121,7 +121,7 @@ void GFXRenderer::render() {
   glfwSwapBuffers();
 }
 
-void GFXRenderer::idle(glm::mat4 model_transform, int width, int height) {
+void GFXScene::idle(glm::mat4 model_transform, int width, int height) {
   glm::mat4 view = glm::lookAt(eyepoint, lookat, up);
   glm::mat4 projection = glm::perspective(45.0f, 1.0f * width / height, 0.1f,
       10.0f);
